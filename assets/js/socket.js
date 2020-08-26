@@ -82,12 +82,18 @@ let game = document.querySelector("#game");
 let joinGame = document.querySelector("#join-game");
 let name = document.querySelector("name");
 
-let aaronChannel;
+let gameChannel;
 joinGame.addEventListener("click", _event => {
-  aaronChannel = new_game_channel("Aaron");
-  join(aaronChannel);
-  aaronChannel.on("said_hello", response => {
-    console.log("Returned Greeting:", response.message)
+  gameChannel = new_game_channel("Aaron");
+  join(gameChannel);
+  gameChannel.on("said_hello", response => {
+    console.log("Returned Greeting:", response.message);
+  });
+  gameChannel.on("player_added", response => {
+    console.log("Player Added", response);
+  });
+  gameChannel.on("player_set_islands", response => {
+    console.log("Player Set Islands", response);
   });
 });
 
@@ -103,7 +109,60 @@ function new_game(channel, greeting) {
 
 let newGame = document.querySelector("#new-game");
 newGame.addEventListener("click", _event => {
-  new_game(aaronChannel);
-})
+  new_game(gameChannel);
+});
+
+function add_player(channel, player) {
+  channel.push("add_player", player)
+    .receive("error", response => {
+      console.log("Unable to add new player: " + player, response);
+    });
+}
+
+let addPlayer = document.querySelector("#add-player");
+addPlayer.addEventListener("click", _event => {
+  add_player(gameChannel, 'Isabel');
+});
+
+function position_island(channel, player, island, row, col) {
+  const params = {
+    player,
+    island,
+    row,
+    col,
+  };
+  channel.push("position_island", params)
+    .receive("ok", response => {
+      console.log("Island positioned!", response);
+    })
+    .receive("error", response => {
+      console.log("Unable to position island.", response);
+    });
+}
+
+let positionIsland = document.querySelector("#position-island");
+positionIsland.addEventListener("click", _event => {
+  position_island(gameChannel, "player2", "atoll", 1, 1);
+  position_island(gameChannel, "player2", "dot", 1, 5);
+  position_island(gameChannel, "player2", "l_shape", 1, 7);
+  position_island(gameChannel, "player2", "s_shape", 5, 1);
+  position_island(gameChannel, "player2", "square", 5, 5);
+});
+
+function set_islands(channel, player) {
+  channel.push("set_islands", player)
+    .receive("ok", response => {
+      console.log("Here is the board:");
+      console.dir(response.board);
+    })
+    .receive("error", response => {
+      console.log("Unable to set islands for: " + player, response);
+    });
+}
+
+let setIslands = document.querySelector("#set-islands");
+setIslands.addEventListener("click", _event => {
+  set_islands(gameChannel, "player2");
+});
 
 export default socket

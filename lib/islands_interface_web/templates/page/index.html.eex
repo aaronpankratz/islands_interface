@@ -5,7 +5,9 @@
 
 <section class="row">
   <div id="game" role="log" aria-live="polite"></div>
-  <input id="name" type="text" value=""/>
   <button id="join-game">Join</button>
   <button id="new-game">New Game</button>
+  <button id="add-player">Add Player</button>
+  <button id="position-island">Position Island</button>
+  <button id="set-islands">Set Islands</button>
 </section>
