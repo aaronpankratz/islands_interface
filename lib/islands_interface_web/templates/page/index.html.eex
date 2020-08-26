@@ -8,6 +8,9 @@
   <button id="join-game">Join</button>
   <button id="new-game">New Game</button>
   <button id="add-player">Add Player</button>
-  <button id="position-island">Position Island</button>
+  <button id="position-island-p1">Position Island P1</button>
+  <button id="position-island-p2">Position Island P2</button>
   <button id="set-islands">Set Islands</button>
+  <button id="guess-coordinate-p1">Guess Coordinate P1</button>
+  <button id="guess-coordinate-p2">Guess Coordinate P2</button>
 </section>

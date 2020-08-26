@@ -80,21 +80,20 @@ export function leave(channel) {
 
 let game = document.querySelector("#game");
 let joinGame = document.querySelector("#join-game");
-let name = document.querySelector("name");
 
 let gameChannel;
 joinGame.addEventListener("click", _event => {
   gameChannel = new_game_channel("Aaron");
   join(gameChannel);
-  gameChannel.on("said_hello", response => {
-    console.log("Returned Greeting:", response.message);
-  });
   gameChannel.on("player_added", response => {
     console.log("Player Added", response);
   });
   gameChannel.on("player_set_islands", response => {
     console.log("Player Set Islands", response);
   });
+  gameChannel.on("player_guessed_coordinate", response => {
+    console.log("Player Guessed Coordinate: ", response.result);
+  })
 });
 
 function new_game(channel, greeting) {
@@ -140,13 +139,18 @@ function position_island(channel, player, island, row, col) {
     });
 }
 
-let positionIsland = document.querySelector("#position-island");
-positionIsland.addEventListener("click", _event => {
+let positionIslandP2 = document.querySelector("#position-island-p2");
+positionIslandP2.addEventListener("click", _event => {
   position_island(gameChannel, "player2", "atoll", 1, 1);
   position_island(gameChannel, "player2", "dot", 1, 5);
   position_island(gameChannel, "player2", "l_shape", 1, 7);
   position_island(gameChannel, "player2", "s_shape", 5, 1);
   position_island(gameChannel, "player2", "square", 5, 5);
+});
+
+let positionIslandP1 = document.querySelector("#position-island-p1");
+positionIslandP1.addEventListener("click", _event => {
+  position_island(gameChannel, "player1", "dot", 1, 5);
 });
 
 function set_islands(channel, player) {
@@ -163,6 +167,28 @@ function set_islands(channel, player) {
 let setIslands = document.querySelector("#set-islands");
 setIslands.addEventListener("click", _event => {
   set_islands(gameChannel, "player2");
+});
+
+function guess_coordinate(channel, player, row, col) {
+  const params = {
+    player,
+    row,
+    col,
+  };
+  channel.push("guess_coordinate", params)
+    .receive("error", response => {
+      console.log("Unable to guess a coordinate: " + player, response);
+    });
+}
+
+let guessCoordinateP1 = document.querySelector("#guess-coordinate-p1");
+guessCoordinateP1.addEventListener("click", _event => {
+  guess_coordinate(gameChannel, "player1", 10, 1);
+});
+
+let guessCoordinateP2 = document.querySelector("#guess-coordinate-p2");
+guessCoordinateP2.addEventListener("click", _event => {
+  guess_coordinate(gameChannel, "player2", 1, 5);
 });
 
 export default socket
