@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+let socket = new Socket("/socket", {params: {}})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -54,10 +54,56 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 // Finally, connect to the socket:
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("topic:subtopic", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+export function new_game_channel(subtopic, screen_name) {
+  return socket.channel(`game:${subtopic}`, {screen_name});
+}
+
+export function join(channel) {
+  channel.join()
+    .receive("ok", response => {
+      console.log("Joined successfully!", response);
+    })
+    .receive("error", response => {
+      console.log("Unable to join", response);
+    });
+}
+
+export function leave(channel) {
+  channel.leave()
+    .receive("ok", response => {
+      console.log("Left successfully", response)
+    })
+    .receive("error", response => {
+      console.log("Unable to leave", response)
+    })
+}
+
+let game = document.querySelector("#game");
+let joinGame = document.querySelector("#join-game");
+let name = document.querySelector("name");
+
+let aaronChannel;
+joinGame.addEventListener("click", _event => {
+  aaronChannel = new_game_channel("Aaron");
+  join(aaronChannel);
+  aaronChannel.on("said_hello", response => {
+    console.log("Returned Greeting:", response.message)
+  });
+});
+
+function new_game(channel, greeting) {
+  channel.push("new_game")
+    .receive("ok", response => {
+      console.log("New Game!", response);
+    })
+    .receive("error", response => {
+      console.log("Unable to start a new game.", response);
+    })
+}
+
+let newGame = document.querySelector("#new-game");
+newGame.addEventListener("click", _event => {
+  new_game(aaronChannel);
+})
 
 export default socket
