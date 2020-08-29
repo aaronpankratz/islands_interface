@@ -79,8 +79,7 @@ export function leave(channel) {
 }
 
 let game = document.querySelector("#game");
-let joinGameP1 = document.querySelector("#join-game-p1");
-let joinGameP2 = document.querySelector("#join-game-p2");
+let joinGameButton = document.querySelector("#join-game");
 
 let gameChannel;
 
@@ -101,12 +100,18 @@ function joinGame(game_name, screen_name) {
   });
 }
 
-joinGameP1.addEventListener("click", _event => {
-  joinGame("Aaron", 'player1');
-});
+function getGameName() {
+  const gameNameInput = document.getElementById("game-name");
+  return gameNameInput.value;
+}
 
-joinGameP2.addEventListener("click", _event => {
-  joinGame("Aaron", 'player2');
+function getPlayerName() {
+  const playerNameInput = document.getElementById("player-name");
+  return playerNameInput.value;
+}
+
+joinGameButton.addEventListener("click", _event => {
+  joinGame(getGameName(), getPlayerName());
 });
 
 function new_game(channel, greeting) {
@@ -133,7 +138,7 @@ function add_player(channel, player) {
 
 let addPlayer = document.querySelector("#add-player");
 addPlayer.addEventListener("click", _event => {
-  add_player(gameChannel, 'Isabel');
+  add_player(gameChannel, getPlayerName());
 });
 
 function position_island(channel, player, island, row, col) {
@@ -179,7 +184,7 @@ function set_islands(channel, player) {
 
 let setIslands = document.querySelector("#set-islands");
 setIslands.addEventListener("click", _event => {
-  set_islands(gameChannel, "player2");
+  set_islands(gameChannel, getPlayerName());
 });
 
 function guess_coordinate(channel, player, row, col) {

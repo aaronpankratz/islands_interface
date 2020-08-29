@@ -5,14 +5,29 @@
 
 <section class="row">
   <div id="game" role="log" aria-live="polite"></div>
-  <button id="join-game-p1">Join P1</button>
-  <button id="join-game-p2">Join P2</button>
-  <button id="show-subscribers">Show Subscribers</button>
-  <button id="new-game">New Game</button>
-  <button id="add-player">Add Player</button>
-  <button id="position-island-p1">Position Island P1</button>
-  <button id="position-island-p2">Position Island P2</button>
-  <button id="set-islands">Set Islands</button>
-  <button id="guess-coordinate-p1">Guess Coordinate P1</button>
-  <button id="guess-coordinate-p2">Guess Coordinate P2</button>
+  <div>
+    <form>
+      <label for="game-name">
+        Game name
+        <input type="text" id="game-name"/>
+      </label>
+      <label for="player-name">
+        Player name
+        <input type="text" id="player-name"/>
+      </label>
+    </form>
+    <button id="join-game">Join Game</button>
+  </div>
+</section>
+<section class="row">
+  <div>
+    <button id="show-subscribers">Show Subscribers</button>
+    <button id="new-game">New Game</button>
+    <button id="add-player">Add Player</button>
+    <button id="position-island-p1">Position Island P1</button>
+    <button id="position-island-p2">Position Island P2</button>
+    <button id="set-islands">Set Islands</button>
+    <button id="guess-coordinate-p1">Guess Coordinate P1</button>
+    <button id="guess-coordinate-p2">Guess Coordinate P2</button>
+  </div>
 </section>
