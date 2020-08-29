@@ -5,7 +5,9 @@
 
 <section class="row">
   <div id="game" role="log" aria-live="polite"></div>
-  <button id="join-game">Join</button>
+  <button id="join-game-p1">Join P1</button>
+  <button id="join-game-p2">Join P2</button>
+  <button id="show-subscribers">Show Subscribers</button>
   <button id="new-game">New Game</button>
   <button id="add-player">Add Player</button>
   <button id="position-island-p1">Position Island P1</button>

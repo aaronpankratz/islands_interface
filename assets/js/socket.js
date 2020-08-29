@@ -79,11 +79,13 @@ export function leave(channel) {
 }
 
 let game = document.querySelector("#game");
-let joinGame = document.querySelector("#join-game");
+let joinGameP1 = document.querySelector("#join-game-p1");
+let joinGameP2 = document.querySelector("#join-game-p2");
 
 let gameChannel;
-joinGame.addEventListener("click", _event => {
-  gameChannel = new_game_channel("Aaron");
+
+function joinGame(game_name, screen_name) {
+  gameChannel = new_game_channel(game_name, screen_name);
   join(gameChannel);
   gameChannel.on("player_added", response => {
     console.log("Player Added", response);
@@ -93,7 +95,18 @@ joinGame.addEventListener("click", _event => {
   });
   gameChannel.on("player_guessed_coordinate", response => {
     console.log("Player Guessed Coordinate: ", response.result);
-  })
+  });
+  gameChannel.on("subscribers", response => {
+    console.log("These players have joined: ", response);
+  });
+}
+
+joinGameP1.addEventListener("click", _event => {
+  joinGame("Aaron", 'player1');
+});
+
+joinGameP2.addEventListener("click", _event => {
+  joinGame("Aaron", 'player2');
 });
 
 function new_game(channel, greeting) {
@@ -189,6 +202,12 @@ guessCoordinateP1.addEventListener("click", _event => {
 let guessCoordinateP2 = document.querySelector("#guess-coordinate-p2");
 guessCoordinateP2.addEventListener("click", _event => {
   guess_coordinate(gameChannel, "player2", 1, 5);
+});
+
+
+let showSubscribers = document.querySelector("#show-subscribers");
+showSubscribers.addEventListener("click", _event => {
+  gameChannel.push("show_subscribers");
 });
 
 export default socket
