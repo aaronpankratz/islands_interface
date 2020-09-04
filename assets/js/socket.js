@@ -52,167 +52,167 @@ let socket = new Socket("/socket", {params: {}})
 //     end
 //
 // Finally, connect to the socket:
-socket.connect()
+socket.connect();
 
-export function new_game_channel(subtopic, screen_name) {
-  return socket.channel(`game:${subtopic}`, {screen_name});
-}
+// export function new_game_channel(subtopic, screen_name) {
+//   return socket.channel(`game:${subtopic}`, {screen_name});
+// }
 
-export function join(channel) {
-  channel.join()
-    .receive("ok", response => {
-      console.log("Joined successfully!", response);
-    })
-    .receive("error", response => {
-      console.log("Unable to join", response);
-    });
-}
+// export function join(channel) {
+//   channel.join()
+//     .receive("ok", response => {
+//       console.log("Joined successfully!", response);
+//     })
+//     .receive("error", response => {
+//       console.log("Unable to join", response);
+//     });
+// }
 
-export function leave(channel) {
-  channel.leave()
-    .receive("ok", response => {
-      console.log("Left successfully", response)
-    })
-    .receive("error", response => {
-      console.log("Unable to leave", response)
-    })
-}
+// export function leave(channel) {
+//   channel.leave()
+//     .receive("ok", response => {
+//       console.log("Left successfully", response)
+//     })
+//     .receive("error", response => {
+//       console.log("Unable to leave", response)
+//     })
+// }
 
-let game = document.querySelector("#game");
-let joinGameButton = document.querySelector("#join-game");
+// let game = document.querySelector("#game");
+// let joinGameButton = document.querySelector("#join-game");
 
-let gameChannel;
+// let gameChannel;
 
-function joinGame(game_name, screen_name) {
-  gameChannel = new_game_channel(game_name, screen_name);
-  join(gameChannel);
-  gameChannel.on("player_added", response => {
-    console.log("Player Added", response);
-  });
-  gameChannel.on("player_set_islands", response => {
-    console.log("Player Set Islands", response);
-  });
-  gameChannel.on("player_guessed_coordinate", response => {
-    console.log("Player Guessed Coordinate: ", response.result);
-  });
-  gameChannel.on("subscribers", response => {
-    console.log("These players have joined: ", response);
-  });
-}
+// function joinGame(game_name, screen_name) {
+//   gameChannel = new_game_channel(game_name, screen_name);
+//   join(gameChannel);
+//   gameChannel.on("player_added", response => {
+//     console.log("Player Added", response);
+//   });
+//   gameChannel.on("player_set_islands", response => {
+//     console.log("Player Set Islands", response);
+//   });
+//   gameChannel.on("player_guessed_coordinate", response => {
+//     console.log("Player Guessed Coordinate: ", response.result);
+//   });
+//   gameChannel.on("subscribers", response => {
+//     console.log("These players have joined: ", response);
+//   });
+// }
 
-function getGameName() {
-  const gameNameInput = document.getElementById("game-name");
-  return gameNameInput.value;
-}
+// function getGameName() {
+//   const gameNameInput = document.getElementById("game-name");
+//   return gameNameInput.value;
+// }
 
-function getPlayerName() {
-  const playerNameInput = document.getElementById("player-name");
-  return playerNameInput.value;
-}
+// function getPlayerName() {
+//   const playerNameInput = document.getElementById("player-name");
+//   return playerNameInput.value;
+// }
 
-joinGameButton.addEventListener("click", _event => {
-  joinGame(getGameName(), getPlayerName());
-});
+// joinGameButton.addEventListener("click", _event => {
+//   joinGame(getGameName(), getPlayerName());
+// });
 
-function new_game(channel, greeting) {
-  channel.push("new_game")
-    .receive("ok", response => {
-      console.log("New Game!", response);
-    })
-    .receive("error", response => {
-      console.log("Unable to start a new game.", response);
-    })
-}
+// function new_game(channel, greeting) {
+//   channel.push("new_game")
+//     .receive("ok", response => {
+//       console.log("New Game!", response);
+//     })
+//     .receive("error", response => {
+//       console.log("Unable to start a new game.", response);
+//     })
+// }
 
-let newGame = document.querySelector("#new-game");
-newGame.addEventListener("click", _event => {
-  new_game(gameChannel);
-});
+// let newGame = document.querySelector("#new-game");
+// newGame.addEventListener("click", _event => {
+//   new_game(gameChannel);
+// });
 
-function add_player(channel, player) {
-  channel.push("add_player", player)
-    .receive("error", response => {
-      console.log("Unable to add new player: " + player, response);
-    });
-}
+// function add_player(channel, player) {
+//   channel.push("add_player", player)
+//     .receive("error", response => {
+//       console.log("Unable to add new player: " + player, response);
+//     });
+// }
 
-let addPlayer = document.querySelector("#add-player");
-addPlayer.addEventListener("click", _event => {
-  add_player(gameChannel, getPlayerName());
-});
+// let addPlayer = document.querySelector("#add-player");
+// addPlayer.addEventListener("click", _event => {
+//   add_player(gameChannel, getPlayerName());
+// });
 
-function position_island(channel, player, island, row, col) {
-  const params = {
-    player,
-    island,
-    row,
-    col,
-  };
-  channel.push("position_island", params)
-    .receive("ok", response => {
-      console.log("Island positioned!", response);
-    })
-    .receive("error", response => {
-      console.log("Unable to position island.", response);
-    });
-}
+// function position_island(channel, player, island, row, col) {
+//   const params = {
+//     player,
+//     island,
+//     row,
+//     col,
+//   };
+//   channel.push("position_island", params)
+//     .receive("ok", response => {
+//       console.log("Island positioned!", response);
+//     })
+//     .receive("error", response => {
+//       console.log("Unable to position island.", response);
+//     });
+// }
 
-let positionIslandP2 = document.querySelector("#position-island-p2");
-positionIslandP2.addEventListener("click", _event => {
-  position_island(gameChannel, "player2", "atoll", 1, 1);
-  position_island(gameChannel, "player2", "dot", 1, 5);
-  position_island(gameChannel, "player2", "l_shape", 1, 7);
-  position_island(gameChannel, "player2", "s_shape", 5, 1);
-  position_island(gameChannel, "player2", "square", 5, 5);
-});
+// let positionIslandP2 = document.querySelector("#position-island-p2");
+// positionIslandP2.addEventListener("click", _event => {
+//   position_island(gameChannel, "player2", "atoll", 1, 1);
+//   position_island(gameChannel, "player2", "dot", 1, 5);
+//   position_island(gameChannel, "player2", "l_shape", 1, 7);
+//   position_island(gameChannel, "player2", "s_shape", 5, 1);
+//   position_island(gameChannel, "player2", "square", 5, 5);
+// });
 
-let positionIslandP1 = document.querySelector("#position-island-p1");
-positionIslandP1.addEventListener("click", _event => {
-  position_island(gameChannel, "player1", "dot", 1, 5);
-});
+// let positionIslandP1 = document.querySelector("#position-island-p1");
+// positionIslandP1.addEventListener("click", _event => {
+//   position_island(gameChannel, "player1", "dot", 1, 5);
+// });
 
-function set_islands(channel, player) {
-  channel.push("set_islands", player)
-    .receive("ok", response => {
-      console.log("Here is the board:");
-      console.dir(response.board);
-    })
-    .receive("error", response => {
-      console.log("Unable to set islands for: " + player, response);
-    });
-}
+// function set_islands(channel, player) {
+//   channel.push("set_islands", player)
+//     .receive("ok", response => {
+//       console.log("Here is the board:");
+//       console.dir(response.board);
+//     })
+//     .receive("error", response => {
+//       console.log("Unable to set islands for: " + player, response);
+//     });
+// }
 
-let setIslands = document.querySelector("#set-islands");
-setIslands.addEventListener("click", _event => {
-  set_islands(gameChannel, getPlayerName());
-});
+// let setIslands = document.querySelector("#set-islands");
+// setIslands.addEventListener("click", _event => {
+//   set_islands(gameChannel, getPlayerName());
+// });
 
-function guess_coordinate(channel, player, row, col) {
-  const params = {
-    player,
-    row,
-    col,
-  };
-  channel.push("guess_coordinate", params)
-    .receive("error", response => {
-      console.log("Unable to guess a coordinate: " + player, response);
-    });
-}
+// function guess_coordinate(channel, player, row, col) {
+//   const params = {
+//     player,
+//     row,
+//     col,
+//   };
+//   channel.push("guess_coordinate", params)
+//     .receive("error", response => {
+//       console.log("Unable to guess a coordinate: " + player, response);
+//     });
+// }
 
-let guessCoordinateP1 = document.querySelector("#guess-coordinate-p1");
-guessCoordinateP1.addEventListener("click", _event => {
-  guess_coordinate(gameChannel, "player1", 10, 1);
-});
+// let guessCoordinateP1 = document.querySelector("#guess-coordinate-p1");
+// guessCoordinateP1.addEventListener("click", _event => {
+//   guess_coordinate(gameChannel, "player1", 10, 1);
+// });
 
-let guessCoordinateP2 = document.querySelector("#guess-coordinate-p2");
-guessCoordinateP2.addEventListener("click", _event => {
-  guess_coordinate(gameChannel, "player2", 1, 5);
-});
+// let guessCoordinateP2 = document.querySelector("#guess-coordinate-p2");
+// guessCoordinateP2.addEventListener("click", _event => {
+//   guess_coordinate(gameChannel, "player2", 1, 5);
+// });
 
 
-let showSubscribers = document.querySelector("#show-subscribers");
-showSubscribers.addEventListener("click", _event => {
-  gameChannel.push("show_subscribers");
-});
+// let showSubscribers = document.querySelector("#show-subscribers");
+// showSubscribers.addEventListener("click", _event => {
+//   gameChannel.push("show_subscribers");
+// });
 
 export default socket
