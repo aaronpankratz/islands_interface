@@ -1,8 +1,8 @@
 import React from 'react';
 import InGame from './InGame';
+import SocketContext from './SocketContext';
 
 interface GameProps {
-    socket: any;
     onInfo: (msg: string) => void;
     onError: (msg: string) => void;
 }
@@ -38,26 +38,27 @@ export default class Game extends React.Component<GameProps, GameState> {
         });
     }
 
-    onJoinGame = () => {
-        const { gameName, screenName } = this.state;
-        if (!gameName || !screenName) return;
-        const { socket } = this.props;
-        const gameChannel = socket.channel(`game:${gameName}`, { screen_name: screenName });
-        gameChannel.join()
-            .receive("ok", (response: any) => {
-                this.props.onInfo("Joined successfully!");
-                this.setState({
-                    isInGame: true,
+    onJoinGame = (socket: any) => {
+        return () => {
+            const { gameName, screenName } = this.state;
+            if (!gameName || !screenName) return;
+            const gameChannel = socket.channel(`game:${gameName}`, { screen_name: screenName });
+            gameChannel.join()
+                .receive("ok", (response: any) => {
+                    this.props.onInfo("Joined successfully!");
+                    this.setState({
+                        isInGame: true,
+                    });
+                    console.log(response);
+                })
+                .receive("error", (response: any) => {
+                    this.props.onError("Unable to join");
+                    console.log(response);
                 });
-                console.log(response);
-            })
-            .receive("error", (response: any) => {
-                this.props.onError("Unable to join");
-                console.log(response);
+            this.setState({
+                gameChannel,
             });
-        this.setState({
-            gameChannel,
-        });
+        }
     }
 
     render() {
@@ -81,7 +82,9 @@ export default class Game extends React.Component<GameProps, GameState> {
                     Screen name
                     <input type="text" value={screenName} onChange={this.onScreenNameChange}/>
                 </label>
-                <button type="button" onClick={this.onJoinGame}>Join Game</button>
+                <SocketContext.Consumer>
+                    {socket => <button type="button" onClick={this.onJoinGame(socket)}>Join Game</button>}
+                </SocketContext.Consumer>
             </form>
         )
     }

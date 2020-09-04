@@ -16,6 +16,8 @@ import "../css/app.scss"
 import socket from "./socket"
 
 import "phoenix_html"
+import { Socket } from "phoenix";
+import SocketContext from "./SocketContext";
 
 interface AppProps {
     socket: any;
@@ -61,11 +63,13 @@ class App extends React.Component<AppProps, AppState> {
             info,
         } = this.state;
         return (
-            <section className="phx-hero">
-                {info && <div className="alert alert-info" role="alert">{info}</div>}
-                {error && <div className="alert alert-error" role="aler">{error}</div>}
-                <Game socket={socket} onInfo={this.info} onError={this.error}/>
-            </section>
+            <SocketContext.Provider value={this.props.socket}>
+                <section className="phx-hero">
+                    {info && <div className="alert alert-info" role="alert">{info}</div>}
+                    {error && <div className="alert alert-error" role="aler">{error}</div>}
+                    <Game onInfo={this.info} onError={this.error}/>
+                </section>
+            </SocketContext.Provider>
         );
     }
 }
